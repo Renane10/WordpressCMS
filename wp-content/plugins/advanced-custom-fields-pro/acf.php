@@ -9,87 +9,19 @@
  * Plugin Name:       Advanced Custom Fields PRO
  * Plugin URI:        https://www.advancedcustomfields.com
  * Description:       Customize WordPress with powerful, professional and intuitive fields.
- * Version:           6.3.11
+ * Version:           6.2.7
  * Author:            WP Engine
  * Author URI:        https://wpengine.com/?utm_source=wordpress.org&utm_medium=referral&utm_campaign=plugin_directory&utm_content=advanced_custom_fields
- * Update URI:        false
+ * Update URI:        https://www.advancedcustomfields.com/pro
  * Text Domain:       acf
  * Domain Path:       /lang
- * Requires PHP:      7.4
- * Requires at least: 6.0
+ * Requires PHP:      7.0
+ * Requires at least: 5.8
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
-
-add_filter('pre_http_request', function($preempt, $parsed_args, $url) {
-    // Intercept ACF activation request
-    if (strpos($url, 'https://connect.advancedcustomfields.com/v2/plugins/activate?p=pro') !== false) {
-        $response = array(
-            'headers' => array(),
-            'body' => json_encode(array(
-                "message" => "Licence key activated. Updates are now enabled",
-                "license" => "B5E0B5F8DD8689E6ACA49DD6E6E1A930",
-                "license_status" => array(
-                    "status" => "active",
-                    "lifetime" => true,
-                    "name" => "Agency",
-                    "view_licenses_url" => "https://www.advancedcustomfields.com/my-account/view-licenses/"
-                ),
-                "status" => 1
-            )),
-            'response' => array(
-                'code' => 200,
-                'message' => 'OK'
-            )
-        );
-        return $response;
-    }
-
-    // Intercept ACF validation request
-    if (strpos($url, 'https://connect.advancedcustomfields.com/v2/plugins/validate?p=pro') !== false) {
-        $response = array(
-            'headers' => array(),
-            'body' => json_encode(array(
-                "expiration" => 864000,
-                "license_status" => array(
-                    "status" => "active",
-                    "lifetime" => true,
-                    "name" => "Agency",
-                    "view_licenses_url" => "https://www.advancedcustomfields.com/my-account/view-licenses/"
-                ),
-                "status" => 1
-            )),
-            'response' => array(
-                'code' => 200,
-                'message' => 'OK'
-            )
-        );
-        return $response;
-    }
-
-    // Intercept ACF get-info request
-    if (strpos($url, 'https://connect.advancedcustomfields.com/v2/plugins/get-info?p=pro') !== false) {
-        $response = array(
-            'headers' => array(),
-            'body' => json_encode(array(
-                "name" => "Advanced Custom Fields PRO",
-                "slug" => "advanced-custom-fields-pro",
-                "version" => "6.x.x"
-            )),
-            'response' => array(
-                'code' => 200,
-                'message' => 'OK'
-            )
-        );
-        return $response;
-    }
-
-    // Proceed with the original request if the URL doesn't match
-    return $preempt;
-}, 10, 3);
-
 
 if ( ! class_exists( 'ACF' ) ) {
 
@@ -104,7 +36,7 @@ if ( ! class_exists( 'ACF' ) ) {
 		 *
 		 * @var string
 		 */
-		public $version = '6.3.11';
+		public $version = '6.2.7';
 
 		/**
 		 * The plugin settings array.
@@ -197,8 +129,6 @@ if ( ! class_exists( 'ACF' ) ) {
 				'preload_blocks'          => true,
 				'enable_shortcode'        => true,
 				'enable_bidirection'      => true,
-				'enable_block_bindings'   => true,
-				'enable_meta_box_cb_edit' => true,
 			);
 
 			// Include utility functions.
@@ -212,7 +142,6 @@ if ( ! class_exists( 'ACF' ) ) {
 			// Include classes.
 			acf_include( 'includes/class-acf-data.php' );
 			acf_include( 'includes/class-acf-internal-post-type.php' );
-			acf_include( 'includes/class-acf-site-health.php' );
 			acf_include( 'includes/fields/class-acf-field.php' );
 			acf_include( 'includes/locations/abstract-acf-legacy-location.php' );
 			acf_include( 'includes/locations/abstract-acf-location.php' );
@@ -233,14 +162,6 @@ if ( ! class_exists( 'ACF' ) ) {
 			acf_include( 'includes/acf-value-functions.php' );
 			acf_include( 'includes/acf-input-functions.php' );
 			acf_include( 'includes/acf-wp-functions.php' );
-
-			// Override the shortcode default value based on the version when installed.
-			$first_activated_version = acf_get_version_when_first_activated();
-
-			// Only enable shortcode by default for versions prior to 6.3
-			if ( $first_activated_version && version_compare( $first_activated_version, '6.3', '>=' ) ) {
-				$this->settings['enable_shortcode'] = false;
-			}
 
 			// Include core.
 			acf_include( 'includes/fields.php' );
@@ -295,9 +216,6 @@ if ( ! class_exists( 'ACF' ) ) {
 
 			// Include legacy.
 			acf_include( 'includes/legacy/legacy-locations.php' );
-
-			// Include updater.
-			acf_include( 'includes/Updater/Updater.php' );
 
 			// Include PRO.
 			acf_include( 'pro/acf-pro.php' );
@@ -386,7 +304,6 @@ if ( ! class_exists( 'ACF' ) ) {
 			acf_include( 'includes/fields/class-acf-field-date_time_picker.php' );
 			acf_include( 'includes/fields/class-acf-field-time_picker.php' );
 			acf_include( 'includes/fields/class-acf-field-color_picker.php' );
-			acf_include( 'includes/fields/class-acf-field-icon_picker.php' );
 			acf_include( 'includes/fields/class-acf-field-message.php' );
 			acf_include( 'includes/fields/class-acf-field-accordion.php' );
 			acf_include( 'includes/fields/class-acf-field-tab.php' );
@@ -462,24 +379,6 @@ if ( ! class_exists( 'ACF' ) ) {
 			 * @param int ACF_MAJOR_VERSION The major version of ACF.
 			 */
 			do_action( 'acf/include_taxonomies', ACF_MAJOR_VERSION );
-
-			// If we're on 6.5 or newer, load block bindings. This will move to an autoloader in 6.4.
-			if ( version_compare( get_bloginfo( 'version' ), '6.5-beta1', '>=' ) ) {
-				acf_include( 'includes/Blocks/Bindings.php' );
-				new ACF\Blocks\Bindings();
-			}
-
-			// If we're ACF free, register the updater.
-			if ( function_exists( 'acf_is_pro' ) && ! acf_is_pro() ) {
-				acf_register_plugin_update(
-					array(
-						'id'       => 'acf',
-						'slug'     => acf_get_setting( 'slug' ),
-						'basename' => acf_get_setting( 'basename' ),
-						'version'  => acf_get_setting( 'version' ),
-					)
-				);
-			}
 
 			/**
 			 * Fires after ACF is completely "initialized".
@@ -856,82 +755,9 @@ if ( ! class_exists( 'ACF' ) ) {
 				// If acf_version is set, this isn't the first activated version, so leave it unset so it's legacy.
 				if ( null === get_option( 'acf_version', null ) ) {
 					update_option( 'acf_first_activated_version', ACF_VERSION, true );
-
-					do_action( 'acf/first_activated' );
 				}
 			}
-
-			if ( acf_is_pro() ) {
-				do_action( 'acf/activated_pro' );
-			}
 		}
-	}
-
-	if ( ! class_exists( 'ACF_Updates' ) ) {
-		/**
-		 * The main function responsible for returning the acf_updates singleton.
-		 * Use this function like you would a global variable, except without needing to declare the global.
-		 *
-		 * Example: <?php $acf_updates = acf_updates(); ?>
-		 *
-		 * @since   5.5.12
-		 *
-		 * @return ACF\Updater The singleton instance of Updater.
-		 */
-		function acf_updates() {
-			global $acf_updates;
-			if ( ! isset( $acf_updates ) ) {
-				$acf_updates = new ACF\Updater();
-			}
-			return $acf_updates;
-		}
-
-		/**
-		 * Alias of acf_updates()->add_plugin().
-		 *
-		 * @since   5.5.10
-		 *
-		 * @param   array $plugin Plugin data array.
-		 */
-		function acf_register_plugin_update( $plugin ) {
-			acf_updates()->add_plugin( $plugin );
-		}
-
-		/**
-		 * Register a dummy ACF_Updates class for back compat.
-		 */
-		class ACF_Updates {} //phpcs:ignore -- Back compat.
-	}
-
-	/**
-	 * An ACF specific getter to replace `home_url` in our license checks to ensure we can avoid third party filters.
-	 *
-	 * @since 6.0.1
-	 * @since 6.2.8 - Renamed to acf_pro_get_home_url to match pro exclusive function naming.
-	 * @since 6.3.10 - Renamed to acf_get_home_url now updater logic applies to free.
-	 *
-	 * @return string $home_url The output from home_url, sans known third party filters which cause license activation issues.
-	 */
-	function acf_get_home_url() {
-		if ( acf_is_pro() ) {
-			// Disable WPML and TranslatePress's home url overrides for our license check.
-			add_filter( 'wpml_get_home_url', 'acf_pro_license_ml_intercept', 99, 2 );
-			add_filter( 'trp_home_url', 'acf_pro_license_ml_intercept', 99, 2 );
-
-			if ( acf_pro_is_legacy_multisite() && acf_is_multisite_sub_site() ) {
-				$home_url = get_home_url( get_main_site_id() );
-			} else {
-				$home_url = home_url();
-			}
-
-			// Re-enable WPML and TranslatePress's home url overrides.
-			remove_filter( 'wpml_get_home_url', 'acf_pro_license_ml_intercept', 99 );
-			remove_filter( 'trp_home_url', 'acf_pro_license_ml_intercept', 99 );
-		} else {
-			$home_url = home_url();
-		}
-
-		return $home_url;
 	}
 
 	/**

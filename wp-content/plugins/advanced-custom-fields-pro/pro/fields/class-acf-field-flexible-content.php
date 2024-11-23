@@ -26,7 +26,6 @@ if ( ! class_exists( 'acf_field_flexible_content' ) ) :
 			$this->doc_url       = acf_add_url_utm_tags( 'https://www.advancedcustomfields.com/resources/flexible-content/', 'docs', 'field-type-selection' );
 			$this->tutorial_url  = acf_add_url_utm_tags( 'https://www.advancedcustomfields.com/resources/building-layouts-with-the-flexible-content-field-in-a-theme/', 'docs', 'field-type-selection' );
 			$this->pro           = true;
-			$this->supports      = array( 'bindings' => false );
 			$this->defaults      = array(
 				'layouts'      => array(),
 				'min'          => '',
@@ -96,6 +95,7 @@ if ( ! class_exists( 'acf_field_flexible_content' ) ) :
 		 * @param   $layout (array)
 		 * @return  $layout (array)
 		 */
+
 		function get_valid_layout( $layout = array() ) {
 
 			// parse
@@ -128,6 +128,7 @@ if ( ! class_exists( 'acf_field_flexible_content' ) ) :
 		 *
 		 * @return  $field - the field array holding all the field options
 		 */
+
 		function load_field( $field ) {
 
 			// bail early if no field layouts
@@ -224,6 +225,7 @@ if ( ! class_exists( 'acf_field_flexible_content' ) ) :
 		 * @since   3.6
 		 * @date    23/01/13
 		 */
+
 		function render_field( $field ) {
 
 			// defaults
@@ -324,6 +326,7 @@ if ( ! class_exists( 'acf_field_flexible_content' ) ) :
 		 * @param   $post_id (int)
 		 * @return  $post_id (int)
 		 */
+
 		function render_layout( $field, $layout, $i, $value ) {
 
 			// vars
@@ -894,10 +897,6 @@ if ( ! class_exists( 'acf_field_flexible_content' ) ) :
 
 				// loop rows
 				foreach ( $value as $i => $row ) {
-					// ensure row is an array
-					if ( ! is_array( $row ) ) {
-						continue;
-					}
 
 					// get layout
 					$l = $row['acf_fc_layout'];
@@ -1222,6 +1221,7 @@ if ( ! class_exists( 'acf_field_flexible_content' ) ) :
 		 * @param   $post_id (int)
 		 * @return  $post_id (int)
 		 */
+
 		function delete_field( $field ) {
 
 			if ( ! empty( $field['layouts'] ) ) {
@@ -1255,6 +1255,7 @@ if ( ! class_exists( 'acf_field_flexible_content' ) ) :
 		 *
 		 * @return  $field - the modified field
 		 */
+
 		function duplicate_field( $field ) {
 
 			// vars
@@ -1495,6 +1496,7 @@ if ( ! class_exists( 'acf_field_flexible_content' ) ) :
 		 * @param   $field (array)
 		 * @return  $field
 		 */
+
 		function validate_any_field( $field ) {
 
 			// width has changed
@@ -1517,6 +1519,7 @@ if ( ! class_exists( 'acf_field_flexible_content' ) ) :
 		 * @param   $field (array)
 		 * @return  $field
 		 */
+
 		function translate_field( $field ) {
 
 			// translate
